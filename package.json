@@ -1,0 +1,24 @@
+{
+  "name": "bull-dashboard",
+  "version": "1.0.0",
+  "description": "Dashboard for Bull queue [Bull](https://github.com/OptimalBits/bull)",
+  "main": "index.js",
+  "scripts": {
+    "test": "tap",
+    "start": "node $npm_package_main"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "tap": "^14.6.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/christian-fei/bull-dashboard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/christian-fei/bull-dashboard/issues"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
