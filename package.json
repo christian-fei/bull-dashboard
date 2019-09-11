@@ -2,10 +2,12 @@
   "name": "bull-dashboard",
   "version": "1.0.0",
   "description": "Dashboard for Bull queue [Bull](https://github.com/OptimalBits/bull)",
+  "bin": "server.js",
   "main": "index.js",
   "scripts": {
     "test": "tap",
-    "start": "node $npm_package_main"
+    "prestart": "cp -r client/web_modules/preact.js client/preact.js",
+    "start": "node server.js"
   },
   "dependencies": {
     "bull": "^3.10.0",

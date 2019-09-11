@@ -11,7 +11,7 @@ async function main () {
   const app = express()
   const sse = new SSE()
 
-  app.get('/', express.static('client'))
+  app.use('/', express.static('client'))
   app.get('/stream', sse.init)
   app.listen(process.env.HTTP_PORT || process.env.PORT || 4000)
 
