@@ -9,14 +9,14 @@
       /* layout */
       html, body { min-height: 100%; min-height: 100vh; }
       body { padding: 0.5em 1em; }
-      body > header { max-width: 45em; margin: 0 auto; }
-      body > main { max-width: 45em; margin: 0 auto; }
-      body > footer { max-width: 45em; margin: 0 auto; }
+      body > header { max-width: 60em; margin: 0 auto; }
+      body > main { max-width: 60em; margin: 0 auto; }
+      body > footer { max-width: 60em; margin: 0 auto; }
       img { max-width: 100%; }
 
       /* typography */
-      html, body { font-size: 22px; font-weight: 400; line-height: 1; }
-      @media all and (max-width: 45em) { html, body { font-size: 18px; } }
+      html, body { font-size: 20px; font-weight: 400; line-height: 1; }
+      @media all and (max-width: 60em) { html, body { font-size: 16px; } }
       html, body { font-family: 'Poppins', sans-serif; }
       a { color: inherit; }
       a:visited { color: inherit; }
@@ -85,10 +85,17 @@
         max-height: 13.5em;
         overflow: scroll;
       }
-      .job {}
+      .job {
+        padding: 0.2em;
+      }
       .job-id {
         display: inline-block;
         font-weight: bold;
+      }
+      .job-progress {
+        display: inline-block;
+        padding-left: 1em;
+        padding-right: 1em;
       }
       .job-id::before {
         display: inline-block;
@@ -148,11 +155,11 @@
         return preact.h('div', {className: `job ${job.id}`}, [
           preact.h('span', {className: 'job-id'}, job.id),
           // preact.h('span', {className: 'job-delay'}, job.delay),
-          preact.h('div', {className: 'job-progress'}, `${job.progress}% done`),
+          preact.h('span', {className: 'job-progress'}, `${job.progress}%`),
           // preact.h('span', {className: 'job-attempts'}, job.opts.attempts),
           // preact.h('span', {className: 'job-attempts-made'}, job.attemptsMade),
-          preact.h('small', {className: 'small'}, `\t@ ${new Date(job.timestamp).toISOString()}
-          `),
+          job.finishedOn && preact.h('span', {className: 'small'}, `took ${humanMS(job.finishedOn - job.processedOn)}`),
+          preact.h('small', {className: 'small'}, `\t@ ${new Date(job.timestamp).toISOString()}`),
           // \tprocessedOn: ${new Date(job.processedOn).toISOString()}
           // \tfinishedOn: ${new Date(job.finishedOn).toISOString()}
           // \tduration: ${humanMS(job.finishedOn - job.processedOn)}
@@ -161,56 +168,55 @@
       }
       function Queue () {
         Component.constructor.call(this)
-        this.state = queueState
       }
       Queue.prototype = Object.create(Component.prototype)
       Queue.prototype.render = function () {
-        const queue = this.props
+        const {queue, state, updateState} = this.props
         if (!queue) return
         return preact.h('div', {className: `queue queue-${queue.name}`}, [
           preact.h('h1', {className: 'queue-name'}, [queue.name]),
           preact.h('div', {className: 'queue-details'}, [
             preact.h('div', {className: 'queue-types'}, [
               preact.h('div', {
-                onClick: showQueueType.bind(this, 'active', queue.name),
-                className: (!this.state.showQueue || this.state.showQueue === queue.name && this.state.showQueueType === 'active') ? 'active' : ''
+                onClick: () => updateState({showQueue: queue.name, showQueueType: 'active'}),
+                className: (!state.showQueue || state.showQueue === queue.name && state.showQueueType === 'active') ? 'active' : ''
               }, [
                 preact.h('span', {className: 'queue-type-name'}, ['active']),
                 preact.h('span', {className: 'queue-type-count'}, [queue.active.length])
               ]),
               preact.h('div', {
-                onClick: showQueueType.bind(this, 'completed', queue.name),
-                className: this.state.showQueue === queue.name && this.state.showQueueType === 'completed' ? 'active' : ''
+                onClick: () => updateState({showQueue: queue.name, showQueueType: 'completed'}),
+                className: state.showQueue === queue.name && state.showQueueType === 'completed' ? 'active' : ''
               }, [
                 preact.h('span', {className: 'queue-type-name'}, ['completed']),
                 preact.h('span', {className: 'queue-type-count'}, [queue.completed.length])
               ]),
               preact.h('div', {
-                onClick: showQueueType.bind(this, 'failed', queue.name),
-                className: this.state.showQueue === queue.name && this.state.showQueueType === 'failed' ? 'active' : ''
+                onClick: () => updateState({showQueue: queue.name, showQueueType: 'failed'}),
+                className: state.showQueue === queue.name && state.showQueueType === 'failed' ? 'active' : ''
               }, [
                 preact.h('span', {className: 'queue-type-name'}, ['failed']),
                 preact.h('span', {className: 'queue-type-count'}, [queue.failed.length])
               ]),
               preact.h('div', {
-                onClick: showQueueType.bind(this, 'waiting', queue.name),
-                className: this.state.showQueue === queue.name && this.state.showQueueType === 'waiting' ? 'active' : ''
+                onClick: () => updateState({showQueue: queue.name, showQueueType: 'waiting'}),
+                className: state.showQueue === queue.name && state.showQueueType === 'waiting' ? 'active' : ''
               }, [
                 preact.h('span', {className: 'queue-type-name'}, ['waiting']),
                 preact.h('span', {className: 'queue-type-count'}, [queue.waiting.length])
               ]),
               preact.h('div', {
-                onClick: showQueueType.bind(this, 'delayed', queue.name),
-                className: this.state.showQueue === queue.name && this.state.showQueueType === 'delayed' ? 'active' : ''
+                onClick: () => updateState({showQueue: queue.name, showQueueType: 'delayed'}),
+                className: state.showQueue === queue.name && state.showQueueType === 'delayed' ? 'active' : ''
               }, [
                 preact.h('span', {className: 'queue-type-name'}, ['delayed']),
                 preact.h('span', {className: 'queue-type-count'}, [queue.delayed.length])
               ])
             ]),
-            preact.h('div', {className: 'queue-preview'}, this.state.showQueueType ? [
-              preact.h('ul', {className: ''}, queue[this.state.showQueueType] && queue[this.state.showQueueType].map(job => preact.h(Job, job))),
+            preact.h('div', {className: 'queue-preview'}, state.showQueueType ? [
+              preact.h('ul', {className: ''}, queue[state.showQueueType] && queue[state.showQueueType].map(job => preact.h(Job, job))),
               preact.h('pre', {className: ''}, [
-                JSON.stringify(queue[this.state.showQueueType], null, 4)
+                JSON.stringify(queue[state.showQueueType], null, 4)
               ])
             ] : null)
           ])
@@ -219,7 +225,11 @@
 
       function App () {
         Component.constructor.call(this)
-        this.state = {data: []}
+        this.state = {
+          data: [],
+          showQueue: undefined,
+          showQueueType: 'active'
+        }
         eventSource.onmessage = (message) => {
           if (!message || !message.data) return console.error('skipping empty message')
           const data = JSON.parse(message.data)
@@ -234,7 +244,10 @@
         return shouldAppUpdate
       }
       App.prototype.render = function () {
-        const layout = this.state.data.map((queue) => preact.h(Queue, queue))
+        const self = this
+        const layout = this.state.data.map((queue) => preact.h(Queue, {queue, state: this.state, updateState: (state) => {
+          self.setState(state)
+        }}))
         return preact.h('div', null, layout)
       }
       preact.render(preact.h(App), document.getElementById('main'))
