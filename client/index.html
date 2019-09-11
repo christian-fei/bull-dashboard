@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>bull-dashboard</title>
+  </head>
+  <body>
+
+    <main id="main"></main>
+
+    <script type="module">
+      import * as preact from 'https://cdn.pika.dev/preact/latest';
+      const { Component } = preact
+      const eventSource = new EventSource('/stream')
+
+      function App () {
+        Component.constructor.call(this)
+        this.state = {data: []}
+        eventSource.onmessage = (message) => {
+          if (!message || !message.data) return console.error('skipping empty message')
+          const data = JSON.parse(message.data)
+          console.log('data', data)
+          this.setState({data})
+        }
+      }
+      App.prototype = Object.create(Component.prototype)
+      App.prototype.render = function () {
+        const structure = this.state.data.map((queue) => {
+          return preact.h('div', {className: `queue queue-${queue.name}`}, [
+            preact.h('h1', null, [queue.name]),
+            preact.h('div', null, [
+              preact.h('p', null, ['active: ', queue.active.length]),
+              preact.h('p', null, ['completed: ', queue.completed.length]),
+              preact.h('p', null, ['failed: ', queue.failed.length]),
+              preact.h('p', null, ['waiting: ', queue.waiting.length]),
+              preact.h('p', null, ['delayed: ', queue.delayed.length])
+            ])
+          ])
+        })
+        return preact.h('div', null, structure)
+      }
+
+      preact.render(preact.h(App), document.getElementById('main'))
+    </script>
+
+  </body>
+</html>

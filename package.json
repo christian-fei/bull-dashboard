@@ -7,7 +7,12 @@
     "test": "tap",
     "start": "node $npm_package_main"
   },
-  "dependencies": {},
+  "dependencies": {
+    "bull": "^3.10.0",
+    "express": "^4.17.1",
+    "express-sse": "^0.5.1",
+    "redis": "^2.8.0"
+  },
   "devDependencies": {
     "tap": "^14.6.1"
   },
