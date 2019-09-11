@@ -109,24 +109,16 @@
     </main>
 
     <script>
+      if (window.loading) window.loading.style = 'display: none'
+
       const eventSource = new EventSource('/stream')
       window.eventSource = eventSource
     </script>
     <script type="module">
+
       import * as preact from 'https://cdn.pika.dev/preact/latest';
       const { Component } = preact
 
-      const queueState = {
-        showQueue: undefined,
-        showQueueType: 'active'
-      }
-      function showQueueType (type, name) {
-        queueState.showQueue = name
-        queueState.showQueueType = type
-        this.setState(queueState)
-      }
-
-      window.loading.style = 'display: none'
 
       function humanMS (ms) {
         if (!Number.isFinite(ms)) return ``
@@ -176,20 +168,19 @@
           preact.h('div', {className: 'queue-details'}, [
             preact.h('div', {className: 'queue-types'}, [
               ['active', 'completed','failed','waiting','delayed'].map(type => preact.h('div', {
-                onClick: () => updateState({showQueue: queue.name, showQueueType: type}),
-                className: (!state.showQueue || state.showQueue === queue.name && state.showQueueType === type) ? 'active' : ''
+                onClick: () => updateState({showQueue: queue.name, showQueueType: type})
               }, [
                 preact.h('span', {className: 'queue-type-name'}, [type]),
                 preact.h('span', {className: 'queue-type-count'}, [queue[type].length])
               ]))
             ]),
-            preact.h('div', {className: 'queue-preview'}, state.showQueueType ? [
+            state.showQueue === queue.name && preact.h('div', {className: 'queue-preview'}, [
               preact.h('ul', {className: ''}, queue[state.showQueueType] && queue[state.showQueueType].map(job => preact.h(Job, job))),
               preact.h('pre', {className: ''}, [
                 JSON.stringify(queue[state.showQueueType], null, 4)
               ])
-            ] : null)
-          ])
+            ])
+          ].filter(Boolean))
         ])
       }
 
@@ -215,9 +206,13 @@
       }
       App.prototype.render = function () {
         const self = this
-        const layout = this.state.data.map((queue) => preact.h(Queue, {queue, state: this.state, updateState: (state) => {
-          self.setState(state)
-        }}))
+        const layout = this.state.data.map((queue) => preact.h(Queue, {
+          queue,
+          state: this.state,
+          updateState: (state) => {
+            self.setState(state)
+          }
+        }))
         return preact.h('div', null, layout)
       }
       preact.render(preact.h(App), document.getElementById('main'))
