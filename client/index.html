@@ -21,7 +21,7 @@
       a { color: inherit; }
       a:visited { color: inherit; }
       pre, code { overflow: scroll; }
-      ul { padding-left: 0em; }
+      ul { padding-left: 0em; margin-top: 0; }
       h1, h2, h3 { margin-top: 0; }
       /* https://type-scale.com/ */
       h1, h2, h3, h4, h5 { margin: 2.75rem 0 1rem; font-weight: 400; line-height: 1.15; }
@@ -37,7 +37,6 @@
         margin-top: 0;
       }
       .queue {
-        overflow: hidden;
         min-height: 20em;
         box-shadow: 0 1px 3px rgba(0,0,0,.5);
         padding: 0.3em 1em;
@@ -47,6 +46,12 @@
       .queue-types div {
         padding: 0.1em;
         overflow: hidden;
+      }
+      .queue-types div.active {
+        color: #333;
+        text-decoration: underline;
+        text-decoration-color: #333;
+        text-decoration-style: double;
       }
       .queue-name {
         text-decoration: underline;
@@ -75,12 +80,19 @@
         line-height: 1.4em;
       }
       .queue-preview {
+        padding-left: 1em;
         flex: 1;
+        max-height: 13.5em;
+        overflow: scroll;
       }
-      .queue-preview pre {
-        font-size: 1em;
-        height: 13em;
-        margin: 0;
+      .job {}
+      .job-id {
+        display: inline-block;
+        font-weight: bold;
+      }
+      .job-id::before {
+        display: inline-block;
+        content: '#';
       }
     </style>
   </head>
@@ -145,12 +157,16 @@
         }
         */
         return preact.h('div', {className: `job ${job.id}`}, [
-          preact.h('span', null, `#${job.id}\tattempts: ${job.opts.attempts}\tdelay: ${job.delay}\tprogress: ${job.progress}`),
-          preact.h('span', null, `\ttimestamp: ${new Date(job.timestamp).toISOString()}
-          \tprocessedOn: ${new Date(job.processedOn).toISOString()}
-          \tfinishedOn: ${new Date(job.finishedOn).toISOString()}
-          \tduration: ${humanMS(job.finishedOn - job.processedOn)}
+          preact.h('span', {className: 'job-id'}, job.id),
+          // preact.h('span', {className: 'job-delay'}, job.delay),
+          // preact.h('span', {className: 'job-progress'}, job.progress),
+          // preact.h('span', {className: 'job-attempts'}, job.opts.attempts),
+          // preact.h('span', {className: 'job-attempts-made'}, job.attemptsMade),
+          preact.h('small', {className: 'small'}, `\t@ ${new Date(job.timestamp).toISOString()}
           `),
+          // \tprocessedOn: ${new Date(job.processedOn).toISOString()}
+          // \tfinishedOn: ${new Date(job.finishedOn).toISOString()}
+          // \tduration: ${humanMS(job.finishedOn - job.processedOn)}
         ].filter(Boolean))
         return null
       }
@@ -174,35 +190,47 @@
           preact.h('h1', {className: 'queue-name'}, [queue.name]),
           preact.h('div', {className: 'queue-details'}, [
             preact.h('div', {className: 'queue-types'}, [
-              preact.h('div', {onClick: showQueueDetails.bind(this, 'active').bind(this)}, [
+              preact.h('div', {
+                onClick: showQueueDetails.bind(this, 'active'),
+                className: this.state.showQueueDetails === 'active' ? 'active' : ''
+              }, [
                 preact.h('span', {className: 'queue-type-name'}, ['active']),
                 preact.h('span', {className: 'queue-type-count'}, [queue.active.length])
               ]),
-              preact.h('div', {onClick: showQueueDetails.bind(this, 'completed').bind(this)}, [
+              preact.h('div', {
+                onClick: showQueueDetails.bind(this, 'completed'),
+                className: this.state.showQueueDetails === 'completed' ? 'active' : ''
+              }, [
                 preact.h('span', {className: 'queue-type-name'}, ['completed']),
                 preact.h('span', {className: 'queue-type-count'}, [queue.completed.length])
               ]),
-              preact.h('div', {onClick: showQueueDetails.bind(this, 'failed').bind(this)}, [
+              preact.h('div', {
+                onClick: showQueueDetails.bind(this, 'failed'),
+                className: this.state.showQueueDetails === 'failed' ? 'active' : ''
+              }, [
                 preact.h('span', {className: 'queue-type-name'}, ['failed']),
                 preact.h('span', {className: 'queue-type-count'}, [queue.failed.length])
               ]),
-              preact.h('div', {onClick: showQueueDetails.bind(this, 'waiting').bind(this)}, [
+              preact.h('div', {
+                onClick: showQueueDetails.bind(this, 'waiting'),
+                className: this.state.showQueueDetails === 'waiting' ? 'active' : ''
+              }, [
                 preact.h('span', {className: 'queue-type-name'}, ['waiting']),
                 preact.h('span', {className: 'queue-type-count'}, [queue.waiting.length])
               ]),
-              preact.h('div', {onClick: showQueueDetails.bind(this, 'delayed').bind(this)}, [
+              preact.h('div', {
+                onClick: showQueueDetails.bind(this, 'delayed'),
+                className: this.state.showQueueDetails === 'delayed' ? 'active' : ''
+              }, [
                 preact.h('span', {className: 'queue-type-name'}, ['delayed']),
                 preact.h('span', {className: 'queue-type-count'}, [queue.delayed.length])
               ])
             ]),
             preact.h('div', {className: 'queue-preview'}, this.state.showQueueDetails ? [
-              preact.h('h3', {className: ''}, [
-                this.state.showQueueDetails
-              ]),
               preact.h('ul', {className: ''}, queue[this.state.showQueueDetails].map(job => preact.h(Job, job))),
-              preact.h('pre', {className: ''}, [
-                JSON.stringify(queue[this.state.showQueueDetails], null, 2)
-              ])
+              // preact.h('pre', {className: ''}, [
+              //   JSON.stringify(queue[this.state.showQueueDetails], null, 2)
+              // ])
             ] : null)
           ])
         ])
