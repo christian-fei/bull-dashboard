@@ -150,8 +150,6 @@
       Job.prototype = Object.create(Component.prototype)
       Job.prototype.render = function () {
         const job = this.props
-        // console.log(JSON.stringify(job))
-        /* { "id":"5", "name":"__default__", "data":{}, "opts":{ "attempts":1, "delay":0, "timestamp":1568225801948 }, "progress":0, "delay":0, "timestamp":1568225801948, "attemptsMade":0, "stacktrace":[], "returnvalue":null, "finishedOn":1568225802337, "processedOn":1568225801949, "children":[] } */
         return preact.h('div', {className: `job ${job.id}`}, [
           preact.h('span', {className: 'job-id'}, job.id),
           // preact.h('span', {className: 'job-delay'}, job.delay),
