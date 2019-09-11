@@ -107,113 +107,15 @@
     <main id="main">
       <h1 id="loading">loading dashboard...</h1>
     </main>
-
     <script>
       if (window.loading) window.loading.style = 'display: none'
-
       const eventSource = new EventSource('/stream')
       window.eventSource = eventSource
     </script>
     <script type="module">
-      import * as preact from '/preact.js';
-      const { Component } = preact
-
-      function humanMS (ms) {
-        if (!Number.isFinite(ms)) return ``
-        const minutes = ms / (1000 * 60)
-        const wholeMinutes = parseInt(minutes, 10)
-        const seconds = (minutes - wholeMinutes) * 60
-        const wholeSeconds = parseInt(seconds, 10)
-        const wholeMillis = parseInt((seconds - wholeSeconds) * 1000, 10)
-        let humanString = ``
-        if (wholeMinutes > 0) humanString += `${wholeMinutes}m `
-        if (wholeSeconds > 0) humanString += `${wholeSeconds}s `
-        humanString += `${wholeMillis}ms `
-        return humanString
-      }
-
-      function Job () {
-        Component.constructor.call(this)
-      }
-      Job.prototype = Object.create(Component.prototype)
-      Job.prototype.render = function () {
-        const job = this.props
-        return preact.h('div', {className: `job ${job.id}`}, [
-          preact.h('span', {className: 'job-id'}, job.id),
-          // preact.h('span', {className: 'job-delay'}, job.delay),
-          preact.h('span', {className: 'job-progress'}, `${job.progress}%`),
-          // preact.h('span', {className: 'job-attempts'}, job.opts.attempts),
-          // preact.h('span', {className: 'job-attempts-made'}, job.attemptsMade),
-          job.finishedOn && preact.h('span', {className: 'small'}, `took ${humanMS(job.finishedOn - job.processedOn)}`),
-          preact.h('small', {className: 'small'}, `\t@ ${new Date(job.timestamp).toISOString()}`),
-          // \tprocessedOn: ${new Date(job.processedOn).toISOString()}
-          // \tfinishedOn: ${new Date(job.finishedOn).toISOString()}
-          // \tduration: ${humanMS(job.finishedOn - job.processedOn)}
-        ].filter(Boolean))
-        return null
-      }
-      function Queue () {
-        Component.constructor.call(this)
-      }
-      Queue.prototype = Object.create(Component.prototype)
-      Queue.prototype.render = function () {
-        const {queue, state, updateState} = this.props
-        if (!queue) return
-        return preact.h('div', {className: `queue queue-${queue.name}`}, [
-          preact.h('h1', {className: 'queue-name'}, [queue.name]),
-          preact.h('div', {className: 'queue-details'}, [
-            preact.h('div', {className: 'queue-types'}, [
-              ['active', 'completed','failed','waiting','delayed'].map(type => preact.h('div', {
-                onClick: () => updateState({showQueue: queue.name, showQueueType: type})
-              }, [
-                preact.h('span', {className: 'queue-type-name'}, [type]),
-                preact.h('span', {className: 'queue-type-count'}, [queue[type].length])
-              ]))
-            ]),
-            preact.h('div', {className: 'queue-preview'}, [
-              preact.h('ul', {className: ''}, queue[state.showQueueType] && queue[state.showQueueType].map(job => preact.h(Job, job))),
-              preact.h('pre', {className: ''}, [
-                JSON.stringify(queue[state.showQueueType], null, 4)
-              ])
-            ])
-          ].filter(Boolean))
-        ])
-      }
-
-      function App () {
-        Component.constructor.call(this)
-        this.state = {
-          queues: [],
-          showQueue: undefined,
-          showQueueType: 'active'
-        }
-        eventSource.onmessage = (message) => {
-          if (!message || !message.data) return console.error('skipping empty message')
-          const queues = JSON.parse(message.data)
-          queues.sort((q1, q2) => q1.name.localeCompare(q2.name))
-          this.setState({queues})
-        }
-      }
-      App.prototype = Object.create(Component.prototype)
-      App.prototype.shouldComponentUpdate =  function  (nextProps, nextState) {
-        const shouldAppUpdate = JSON.stringify(this.state) !== JSON.stringify(nextState)
-        shouldAppUpdate && console.log({shouldAppUpdate})
-        return shouldAppUpdate
-      }
-      App.prototype.render = function () {
-        const self = this
-        const layout = this.state.queues
-          .map((queue) => preact.h(Queue, {
-            queue,
-            state: this.state,
-            updateState: (state) => {
-              self.setState(state)
-            }
-          }))
-        return preact.h('div', null, layout)
-      }
+      import * as preact from '/preact.js'
+      import App from '/components/App.js'
       preact.render(preact.h(App), document.getElementById('main'))
     </script>
-
   </body>
 </html>
