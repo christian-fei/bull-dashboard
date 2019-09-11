@@ -119,7 +119,6 @@
       import * as preact from 'https://cdn.pika.dev/preact/latest';
       const { Component } = preact
 
-
       function humanMS (ms) {
         if (!Number.isFinite(ms)) return ``
         const minutes = ms / (1000 * 60)
@@ -187,15 +186,15 @@
       function App () {
         Component.constructor.call(this)
         this.state = {
-          data: [],
+          queues: [],
           showQueue: undefined,
           showQueueType: 'active'
         }
         eventSource.onmessage = (message) => {
           if (!message || !message.data) return console.error('skipping empty message')
-          const data = JSON.parse(message.data)
-          data.sort((q1, q2) => q1.name.localeCompare(q2.name))
-          this.setState({data})
+          const queues = JSON.parse(message.data)
+          queues.sort((q1, q2) => q1.name.localeCompare(q2.name))
+          this.setState({queues})
         }
       }
       App.prototype = Object.create(Component.prototype)
@@ -206,13 +205,14 @@
       }
       App.prototype.render = function () {
         const self = this
-        const layout = this.state.data.map((queue) => preact.h(Queue, {
-          queue,
-          state: this.state,
-          updateState: (state) => {
-            self.setState(state)
-          }
-        }))
+        const layout = this.state.queues
+          .map((queue) => preact.h(Queue, {
+            queue,
+            state: this.state,
+            updateState: (state) => {
+              self.setState(state)
+            }
+          }))
         return preact.h('div', null, layout)
       }
       preact.render(preact.h(App), document.getElementById('main'))
