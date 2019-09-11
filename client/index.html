@@ -135,8 +135,6 @@
 
       function Job () {
         Component.constructor.call(this)
-        this.state = {
-        }
       }
       Job.prototype = Object.create(Component.prototype)
       Job.prototype.render = function () {
@@ -173,7 +171,7 @@
                 preact.h('span', {className: 'queue-type-count'}, [queue[type].length])
               ]))
             ]),
-            state.showQueue === queue.name && preact.h('div', {className: 'queue-preview'}, [
+            preact.h('div', {className: 'queue-preview'}, [
               preact.h('ul', {className: ''}, queue[state.showQueueType] && queue[state.showQueueType].map(job => preact.h(Job, job))),
               preact.h('pre', {className: ''}, [
                 JSON.stringify(queue[state.showQueueType], null, 4)
