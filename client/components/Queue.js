@@ -1,5 +1,6 @@
 import * as preact from '/preact.js'
 import Job from '/components/Job.js'
+import Chart from '/components/Chart.js'
 const { Component } = preact
 
 export default class Queue extends Component {
@@ -8,6 +9,7 @@ export default class Queue extends Component {
     if (!queue) return
     return preact.h('div', { className: `queue queue-${queue.name}` }, [
       preact.h('h1', { className: 'queue-name' }, [queue.name]),
+      preact.h(Chart, { data: chartFor(queue[state.showQueueType]) }),
       preact.h('div', { className: 'queue-details' }, [
         preact.h('div', { className: 'queue-types' }, [
           ['active', 'completed', 'failed', 'waiting', 'delayed'].map(type => preact.h('div', {
@@ -26,4 +28,15 @@ export default class Queue extends Component {
       ].filter(Boolean))
     ])
   }
+}
+
+function chartFor (jobs) {
+  const filtered = jobs.filter(job => Number.isFinite(job.finishedOn) && Number.isFinite(job.processedOn))
+  const durations = filtered.map(job => job.finishedOn - job.processedOn)
+  const max = Math.max(...durations)
+  const min = Math.min(...durations)
+  const delta = max - min
+  return durations.map(d => {
+    return (d - min) / delta * 1000
+  })
 }

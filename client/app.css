@@ -1,3 +1,5 @@
+/* * { transition: all 0.3s ease; } */
+
 h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
 }
@@ -36,7 +38,8 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 50%;
   font-size: 0.75em;
   display: inline-block;
-  width: 1.25em;
+  /* width: 1.25em; */
+  min-width: 1.25em;
   height: 1.25em;
   padding: 0.2em;
   background: grey;
@@ -65,4 +68,16 @@ h1, h2, h3, h4, h5, h6 {
 .job-id::before {
   display: inline-block;
   content: '#';
+}
+
+svg rect {
+  fill: rgba(95, 2, 184, 0.8);
+  fill: #333;
+  transition: all 0.7s ease;
+}
+svg {
+  width: 100%;
+}
+.chart {
+  min-height: 40px;
 }
