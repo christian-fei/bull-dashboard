@@ -109,8 +109,12 @@
       import * as preact from 'https://cdn.pika.dev/preact/latest';
       const { Component } = preact
 
-      window.loading.style = 'display: none'
+      const queueState = {
+        showQueue: undefined,
+        showQueueType: undefined
+      }
 
+      window.loading.style = 'display: none'
 
       function humanMS (ms) {
         if (!Number.isFinite(ms)) return ``
@@ -134,28 +138,8 @@
       Job.prototype = Object.create(Component.prototype)
       Job.prototype.render = function () {
         const job = this.props
-        console.log(JSON.stringify(job))
-        /*
-        {
-          "id":"5",
-          "name":"__default__",
-          "data":{},
-          "opts":{
-            "attempts":1,
-            "delay":0,
-            "timestamp":1568225801948
-          },
-          "progress":0,
-          "delay":0,
-          "timestamp":1568225801948,
-          "attemptsMade":0,
-          "stacktrace":[],
-          "returnvalue":null,
-          "finishedOn":1568225802337,
-          "processedOn":1568225801949,
-          "children":[]
-        }
-        */
+        // console.log(JSON.stringify(job))
+        /* { "id":"5", "name":"__default__", "data":{}, "opts":{ "attempts":1, "delay":0, "timestamp":1568225801948 }, "progress":0, "delay":0, "timestamp":1568225801948, "attemptsMade":0, "stacktrace":[], "returnvalue":null, "finishedOn":1568225802337, "processedOn":1568225801949, "children":[] } */
         return preact.h('div', {className: `job ${job.id}`}, [
           preact.h('span', {className: 'job-id'}, job.id),
           // preact.h('span', {className: 'job-delay'}, job.delay),
@@ -172,64 +156,62 @@
       }
       function Queue () {
         Component.constructor.call(this)
-        this.state = {
-          showQueueDetails: undefined
-        }
+        this.state = queueState
       }
       Queue.prototype = Object.create(Component.prototype)
       Queue.prototype.render = function () {
         const queue = this.props
         if (!queue) return
-        function showQueueDetails (name) {
-          this.setState({
-            showQueueDetails: name
-          })
+        function showQueueType (type) {
+          queueState.showQueue = queue.name
+          queueState.showQueueType = type
+          this.setState(queueState)
         }
-        console.log('-- Queue render')
+        // console.log('-- Queue render', this.state)
         return preact.h('div', {className: `queue queue-${queue.name}`}, [
           preact.h('h1', {className: 'queue-name'}, [queue.name]),
           preact.h('div', {className: 'queue-details'}, [
             preact.h('div', {className: 'queue-types'}, [
               preact.h('div', {
-                onClick: showQueueDetails.bind(this, 'active'),
-                className: this.state.showQueueDetails === 'active' ? 'active' : ''
+                onClick: showQueueType.bind(this, 'active'),
+                className: this.state.showQueue === queue.name && this.state.showQueueType === 'active' ? 'active' : ''
               }, [
                 preact.h('span', {className: 'queue-type-name'}, ['active']),
                 preact.h('span', {className: 'queue-type-count'}, [queue.active.length])
               ]),
               preact.h('div', {
-                onClick: showQueueDetails.bind(this, 'completed'),
-                className: this.state.showQueueDetails === 'completed' ? 'active' : ''
+                onClick: showQueueType.bind(this, 'completed'),
+                className: this.state.showQueue === queue.name && this.state.showQueueType === 'completed' ? 'active' : ''
               }, [
                 preact.h('span', {className: 'queue-type-name'}, ['completed']),
                 preact.h('span', {className: 'queue-type-count'}, [queue.completed.length])
               ]),
               preact.h('div', {
-                onClick: showQueueDetails.bind(this, 'failed'),
-                className: this.state.showQueueDetails === 'failed' ? 'active' : ''
+                onClick: showQueueType.bind(this, 'failed'),
+                className: this.state.showQueue === queue.name && this.state.showQueueType === 'failed' ? 'active' : ''
               }, [
                 preact.h('span', {className: 'queue-type-name'}, ['failed']),
                 preact.h('span', {className: 'queue-type-count'}, [queue.failed.length])
               ]),
               preact.h('div', {
-                onClick: showQueueDetails.bind(this, 'waiting'),
-                className: this.state.showQueueDetails === 'waiting' ? 'active' : ''
+                onClick: showQueueType.bind(this, 'waiting'),
+                className: this.state.showQueue === queue.name && this.state.showQueueType === 'waiting' ? 'active' : ''
               }, [
                 preact.h('span', {className: 'queue-type-name'}, ['waiting']),
                 preact.h('span', {className: 'queue-type-count'}, [queue.waiting.length])
               ]),
               preact.h('div', {
-                onClick: showQueueDetails.bind(this, 'delayed'),
-                className: this.state.showQueueDetails === 'delayed' ? 'active' : ''
+                onClick: showQueueType.bind(this, 'delayed'),
+                className: this.state.showQueue === queue.name && this.state.showQueueType === 'delayed' ? 'active' : ''
               }, [
                 preact.h('span', {className: 'queue-type-name'}, ['delayed']),
                 preact.h('span', {className: 'queue-type-count'}, [queue.delayed.length])
               ])
             ]),
-            preact.h('div', {className: 'queue-preview'}, this.state.showQueueDetails ? [
-              preact.h('ul', {className: ''}, queue[this.state.showQueueDetails].map(job => preact.h(Job, job))),
+            preact.h('div', {className: 'queue-preview'}, this.state.showQueueType ? [
+              preact.h('ul', {className: ''}, queue[this.state.showQueueType] && queue[this.state.showQueueType].map(job => preact.h(Job, job))),
               // preact.h('pre', {className: ''}, [
-              //   JSON.stringify(queue[this.state.showQueueDetails], null, 2)
+              //   JSON.stringify(queue[this.state.showQueueType], null, 2)
               // ])
             ] : null)
           ])
@@ -242,6 +224,7 @@
         eventSource.onmessage = (message) => {
           if (!message || !message.data) return console.error('skipping empty message')
           const data = JSON.parse(message.data)
+          data.sort((q1, q2) => q1.name.localeCompare(q2.name))
           this.setState({data})
         }
       }
