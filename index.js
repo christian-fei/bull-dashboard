@@ -12,7 +12,7 @@ async function queuesFromRedis (client) {
     .filter(Boolean)
     .map(x => x[1])
     .filter(Boolean)
-    // .filter(x => x.indexOf(':') === -1)
+    .filter(x => x.indexOf(':') === -1)
   ))
   return queueNames.map(queueName => new Queue(queueName))
 }
