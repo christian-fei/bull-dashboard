@@ -12,7 +12,9 @@ export default class Job extends Component {
       // preact.h('span', {className: 'job-attempts-made'}, job.attemptsMade),
       job.finishedOn && preact.h('span', { className: 'small' }, `took ${humanMS(job.finishedOn - job.processedOn)}`),
       preact.h('small', { className: 'small' }, `\t@ ${new Date(job.timestamp).toISOString()}`),
-      preact.h('code', { className: 'small' }, `\t${JSON.stringify(job.data)}`)
+      Object.keys(job.data || {}).length > 0 ? preact.h('div', { className: `` }, [
+        preact.h('code', { className: 'small' }, `\t${JSON.stringify(job.data)}`)
+      ]) : null
       // \tprocessedOn: ${new Date(job.processedOn).toISOString()}
       // \tfinishedOn: ${new Date(job.finishedOn).toISOString()}
       // \tduration: ${humanMS(job.finishedOn - job.processedOn)}
