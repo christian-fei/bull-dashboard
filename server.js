@@ -7,7 +7,6 @@ const redis = require('./lib/redis')
 main()
 
 async function main () {
-  const redisOptions = { host: '127.0.0.1', port: 6379, db: '0' }
   const app = express()
   const sse = new SSE()
 
@@ -15,6 +14,7 @@ async function main () {
   app.get('/stream', sse.init)
   app.listen(process.env.HTTP_PORT || process.env.PORT || 4000)
 
+  const redisOptions = { host: '127.0.0.1', port: 6379, db: '0' }
   const client = redis.getClient(redisOptions)
   const queues = await queuesFromRedis(client)
   setInterval(async () => {

@@ -8,7 +8,7 @@ async function main () {
   const redisOptions = { host: '127.0.0.1', port: 6379, db: '0' }
   const client = redis.getClient(redisOptions)
   const queues = await queuesFromRedis(client)
-  console.log('queues', queues)
+  // console.log('queues', queues)
   // console.log(queues[0])
   // for (const queue of queues) {
   //   console.log('processing queue', queue.name)
