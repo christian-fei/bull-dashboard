@@ -6,7 +6,13 @@ module.exports = {
 
 async function queuesFromRedis (client) {
   const queuesWithJobs = await client.keys(`bull:*`)
-  const queueNames = Array.from(new Set(queuesWithJobs.map(q => q.match(/bull:(\S+):.*/)[1])))
+  const queueNames = Array.from(new Set(queuesWithJobs
+    .map(q => q.match(/bull:(\S+):.*/))
+    .filter(Boolean)
+    .map(x => x[1])
+    .filter(Boolean)
+    .filter(x => x.indexOf(':') === -1)
+  ))
   return queueNames.map(queueName => new Queue(queueName))
 }
 

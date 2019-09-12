@@ -3,6 +3,7 @@ const { Component } = preact
 
 export default class Chart extends Component {
   render ({ data }) {
+    if (!Array.isArray(data) || data.length < 10) return
     const height = 40
     const width = 1200
     return preact.h('svg', { width, height, className: 'chart' }, data
