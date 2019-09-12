@@ -1,6 +1,6 @@
 import * as preact from '/preact.js'
 import Job from '/components/Job.js'
-// import Chart from '/components/Chart.js'
+import Chart from '/components/Chart.js'
 const { Component } = preact
 
 export default class Queue extends Component {
@@ -8,8 +8,10 @@ export default class Queue extends Component {
     const { queue, state, updateState } = this.props
     if (!queue) return
     return preact.h('div', { className: `queue queue-${queue.name}` }, [
-      preact.h('h1', { className: 'queue-name' }, [queue.name]),
-      // preact.h(Chart, { data: chartFor(queue[state.showQueueType]) }),
+      preact.h('h1', { className: 'queue-name' }, [
+        queue.name,
+        preact.h(Chart, { data: chartFor(queue[state.showQueueType]) })
+      ]),
       preact.h('div', { className: 'queue-types' }, [
         ['active', 'completed', 'failed', 'waiting', 'delayed'].map(type => preact.h('div', {
           onClick: () => updateState({ showQueue: queue.name, showQueueType: type })

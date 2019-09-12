@@ -4,16 +4,18 @@ module.exports = {
   queuesFromRedis
 }
 
-async function queuesFromRedis (client) {
-  const queuesWithJobs = await client.keys(`bull:*`)
-  console.log({ queuesWithJobs })
+async function queuesFromRedis (client, namespace = 'bull') {
+  const queuesWithJobs = await client.keys(`${namespace}:*`)
+  // const namespaceRegExp = new RegExp(namespace + ':([^:]+)')
+  const namespaceRegExp = /:([^:]+)/
   const queueNames = Array.from(new Set(queuesWithJobs
-    .map(q => q.match(/bull:(\S+):.*/))
+    .map(q => q.match(namespaceRegExp))
     .filter(Boolean)
     .map(x => x[1])
     .filter(Boolean)
     .filter(x => x.indexOf(':') === -1)
   ))
+  // console.log({ queuesWithJobs })
   return queueNames.map(queueName => new Queue(queueName))
 }
 
