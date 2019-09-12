@@ -9,7 +9,7 @@ export default class App extends Component {
     this.state = {
       queues: [],
       showQueue: undefined,
-      showQueueType: 'active'
+      showQueueType: 'completed'
     }
     eventSource.onmessage = (message) => {
       if (!message || !message.data) return console.error('skipping empty message')

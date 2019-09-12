@@ -22,9 +22,14 @@ h1, h2, h3, h4, h5, h6 {
   text-decoration-color: #333;
   text-decoration-style: double;
 }
-.queue-name {
-  text-decoration: underline;
+.queue-name  {
+  position: relative;
+  height: 140px;
+  text-align: center;
+}
+.queue-name h1 {
   margin-bottom: 0;
+  z-index: 9000;
 }
 .queue-details {
   display: flex;
@@ -54,7 +59,7 @@ h1, h2, h3, h4, h5, h6 {
 .queue-preview {
   padding-left: 1em;
   flex: 1;
-  max-height: 13.5em;
+  max-height: 10em;
   overflow: scroll;
 }
 .job {
@@ -77,7 +82,7 @@ h1, h2, h3, h4, h5, h6 {
 svg rect {
   fill: rgba(95, 2, 184, 0.8);
   fill: #333;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 svg {
   width: 100%;
@@ -86,4 +91,9 @@ svg {
 }
 .chart {
   /* min-height: 100px; */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 0.3;
 }

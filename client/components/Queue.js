@@ -8,8 +8,8 @@ export default class Queue extends Component {
     const { queue, state, updateState } = this.props
     if (!queue) return
     return preact.h('div', { className: `queue queue-${queue.name}` }, [
-      preact.h('h1', { className: 'queue-name' }, [
-        queue.name,
+      preact.h('div', { className: 'queue-name' }, [
+        preact.h('h1', null, queue.name),
         preact.h(Chart, { data: chartFor(queue[state.showQueueType]) })
       ]),
       preact.h('div', { className: 'queue-types' }, [
@@ -23,9 +23,9 @@ export default class Queue extends Component {
       preact.h('div', { className: 'queue-details' }, [
         preact.h('div', { className: 'queue-preview' }, queue[`${state.showQueueType}Length`] && queue[`${state.showQueueType}Length`] > 0 ? [
           preact.h('ul', { className: '' }, queue[state.showQueueType].map(job => preact.h(Job, job))),
-          preact.h('pre', { className: '' }, [
+          state.showQueueType === 'completed' ? preact.h('pre', { className: '' }, [
             JSON.stringify(queue[state.showQueueType], null, 4)
-          ])
+          ]) : null
         ] : [
           preact.h('div', { className: 'empty-queue' }, [
             `Empty "${state.showQueueType}" jobs`
