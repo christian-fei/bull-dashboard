@@ -16,10 +16,10 @@ export default class Queue extends Component {
             onClick: () => updateState({ showQueue: queue.name, showQueueType: type })
           }, [
             preact.h('span', { className: 'queue-type-name' }, [type]),
-            preact.h('span', { className: 'queue-type-count' }, [queue[type].length])
+            preact.h('span', { className: 'queue-type-count' }, [queue[`${type}Length`]])
           ]))
         ]),
-        preact.h('div', { className: 'queue-preview' }, queue[state.showQueueType] && queue[state.showQueueType].length > 0 ? [
+        preact.h('div', { className: 'queue-preview' }, queue[`${state.showQueueType}Length`] && queue[`${state.showQueueType}Length`] > 0 ? [
           preact.h('ul', { className: '' }, queue[state.showQueueType].map(job => preact.h(Job, job))),
           preact.h('pre', { className: '' }, [
             JSON.stringify(queue[state.showQueueType], null, 4)

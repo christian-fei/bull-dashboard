@@ -23,7 +23,18 @@ async function main () {
     for (const queue of queues) {
       const { active, completed, failed, waiting, delayed } = await status(queue)
       console.log(`-- ${queue.name.padEnd(20)} \tactive: ${active.length}\tcompleted: ${completed.length}\tfailed: ${failed.length}\twaiting: ${waiting.length}\tdelayed: ${delayed.length}`)
-      data.push({ name: queue.name, active, completed, failed, waiting, delayed })
+      data.push({
+        name: queue.name,
+        active: active.slice(0, 10),
+        activeLength: active.length,
+        completed: completed.slice(0, 10),
+        completedLength: completed.length,
+        failed: failed.slice(0, 10),
+        failedLength: failed.length,
+        waiting: waiting.slice(0, 10),
+        waitingLength: waiting.length,
+        delayed: delayed.slice(0, 10),
+        delayedLength: delayed.length })
     }
     sse.send(data)
   }, 500)
