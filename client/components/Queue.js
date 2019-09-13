@@ -17,7 +17,7 @@ export default class Queue extends Component {
           onClick: () => updateState({ showQueue: queue.name, showQueueType: type })
         }, [
           preact.h('span', { className: 'queue-type-name' }, [type]),
-          preact.h('span', { className: 'queue-type-count' }, [queue[`${type}Length`]])
+          preact.h('span', { className: `queue-type-count queue-${type}-count` }, [queue[`${type}Length`]])
         ]))
       ]),
       preact.h('div', { className: 'queue-details' }, [
@@ -37,7 +37,7 @@ export default class Queue extends Component {
 }
 
 function chartFor (jobs) {
-  const filtered = jobs.filter(job => Number.isFinite(job.finishedOn) && Number.isFinite(job.processedOn))
+  const filtered = jobs.filter(Boolean).filter(job => Number.isFinite(job.finishedOn) && Number.isFinite(job.processedOn))
   const durations = filtered.map(job => job.finishedOn - job.processedOn)
   const max = Math.max(...durations)
   const min = Math.min(...durations)

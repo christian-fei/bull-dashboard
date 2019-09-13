@@ -4,6 +4,7 @@ const { Component } = preact
 export default class Job extends Component {
   render () {
     const job = this.props
+    if (!job) return null
     return preact.h('div', { className: `job ${job.id}` }, [
       preact.h('span', { className: 'job-id' }, job.id),
       // preact.h('span', {className: 'job-delay'}, job.delay),

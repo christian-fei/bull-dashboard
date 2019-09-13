@@ -5,10 +5,11 @@ const { queuesFromRedis } = require('.')
 const redis = require('./lib/redis')
 const namespace = process.argv[2]
 const history = process.argv[3]
+const delay = process.argv[4]
 
 main({ namespace, history })
 
-async function main ({ namespace = 'bull', history = 200 } = {}) {
+async function main ({ namespace = 'bull', history = 200, delay = 500 } = {}) {
   const app = express()
   const sse = new SSE()
 
@@ -42,7 +43,7 @@ async function main ({ namespace = 'bull', history = 200 } = {}) {
         delayedLength: delayed.length })
     }
     sse.send(data)
-  }, 500)
+  }, Number.isFinite(delay) ? delay : 500)
 }
 
 async function status (queue) {

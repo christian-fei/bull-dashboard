@@ -10,6 +10,19 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 6px;
   margin-bottom: 2em;
 }
+.queue {
+  transition: all .3s ease;
+  animation: updated 1s ease;
+}
+@keyframes updated {
+  from {
+    background: red;
+  }
+  from {
+    background: transparent;
+  }
+}
+
 .queue-types div {
   display: inline-block;
   padding: 0.75em 0.5em;
@@ -56,6 +69,22 @@ h1, h2, h3, h4, h5, h6 {
   text-align: center;
   line-height: 1.4em;
 }
+.queue-active-count {
+  background: #155724;
+}
+.queue-completed-count {
+  background: #856401;
+}
+.queue-failed-count {
+  background: #721c24;
+}
+.queue-waiting-count {
+  background: #0c5460;
+}
+.queue-delayed-count {
+  background: #c6c8ca;
+}
+
 .queue-preview {
   padding-left: 1em;
   flex: 1;
