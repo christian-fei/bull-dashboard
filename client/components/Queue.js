@@ -17,7 +17,7 @@ export default class Queue extends Component {
           onClick: () => updateState({ showQueue: queue.name, showQueueType: type })
         }, [
           preact.h('span', { className: 'queue-type-name' }, [type]),
-          preact.h('span', { className: `queue-type-count queue-${type}-count` }, [queue[`${type}Length`]])
+          preact.h('span', { className: `queue-type-count updated queue-${type}-count` }, [queue[`${type}Length`]])
         ]))
       ]),
       preact.h('div', { className: 'queue-details' }, [

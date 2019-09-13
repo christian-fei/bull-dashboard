@@ -14,9 +14,22 @@ h1, h2, h3, h4, h5, h6 {
   transition: all .3s ease;
   animation: updated 1s ease;
 }
+
+.updated {
+  transition: all .3s ease;
+  animation: updated 1s ease;
+}
 @keyframes updated {
   from {
-    background: red;
+    background: yellow;
+  }
+  to {
+    background: transparent;
+  }
+}
+@-webkit-keyframes updated {
+  from {
+    background: yellow;
   }
   from {
     background: transparent;
@@ -64,7 +77,6 @@ h1, h2, h3, h4, h5, h6 {
   min-width: 1.25em;
   height: 1.25em;
   padding: 0.2em;
-  background: grey;
   color: white;
   text-align: center;
   line-height: 1.4em;

@@ -7,9 +7,9 @@ const namespace = process.argv[2]
 const history = process.argv[3]
 const delay = process.argv[4]
 
-main({ namespace, history })
+main({ namespace, history, delay })
 
-async function main ({ namespace = 'bull', history = 200, delay = 500 } = {}) {
+async function main ({ namespace = 'bull', history = 150, delay = 300 } = {}) {
   const app = express()
   const sse = new SSE()
 
