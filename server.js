@@ -9,7 +9,7 @@ const delay = process.argv[4]
 
 main({ namespace, history, delay })
 
-async function main ({ namespace = 'bull', history = 150, delay = 300 } = {}) {
+async function main ({ namespace = 'bull', history = 100, delay = 100 } = {}) {
   const app = express()
   const sse = new SSE()
 
@@ -19,49 +19,55 @@ async function main ({ namespace = 'bull', history = 150, delay = 300 } = {}) {
 
   const redisOptions = { host: '127.0.0.1', port: 6379, db: '0' }
   const client = redis.getClient(redisOptions)
-  const queues = await queuesFromRedis(client, namespace)
-  // setInterval(async () => {
-  //   queues = await queuesFromRedis(client, namespace)
-  // }, 1000)
+  let queues = await queuesFromRedis(client, namespace)
   setInterval(async () => {
-    console.clear()
+    queues = await queuesFromRedis(client, namespace)
+  }, 1000)
+
+  while (true) {
+    // console.clear()
     const data = []
     for (const queue of queues) {
-      const { active, completed, failed, waiting, delayed } = await status(queue)
-      console.log(`-- ${queue.name.padEnd(20)} \tactive: ${active.length}\tcompleted: ${completed.length}\tfailed: ${failed.length}\twaiting: ${waiting.length}\tdelayed: ${delayed.length}`)
+      let active = await queue.getActive()
+      const activeLength = active.length
+      active = slim(active, history)
+      let completed = await queue.getCompleted()
+      const completedLength = completed.length
+      completed = slim(completed, history)
+      let failed = await queue.getFailed()
+      const failedLength = failed.length
+      failed = slim(failed, history)
+      let waiting = await queue.getWaiting()
+      const waitingLength = waiting.length
+      waiting = slim(waiting, history)
+      let delayed = await queue.getDelayed()
+      const delayedLength = delayed.length
+      delayed = slim(delayed, history)
+      process.stdout.write(`-- ${queue.name.padEnd(20)} \tactive: ${activeLength}\tcompleted: ${completedLength}\tfailed: ${failedLength}\twaiting: ${waitingLength}\tdelayed: ${delayedLength}\n`)
       data.push({
         name: queue.name,
-        active: active.slice(0, history),
-        activeLength: active.length,
-        completed: completed.slice(0, history),
-        completedLength: completed.length,
-        failed: failed.slice(0, history),
-        failedLength: failed.length,
-        waiting: waiting.slice(0, history),
-        waitingLength: waiting.length,
-        delayed: delayed.slice(0, history),
-        delayedLength: delayed.length })
+        active,
+        activeLength,
+        completed,
+        completedLength,
+        failed,
+        failedLength,
+        waiting,
+        waitingLength,
+        delayed,
+        delayedLength
+      })
     }
     sse.send(data)
-  }, Number.isFinite(delay) ? delay : 500)
+    data.length = 0
+
+    await new Promise((resolve) => setTimeout(resolve, delay))
+  }
 }
 
-async function status (queue) {
-  const [
-    active, completed, failed, waiting, delayed
-  ] = await Promise.all([
-    await queue.getActive(),
-    await queue.getCompleted(),
-    await queue.getFailed(),
-    await queue.getWaiting(),
-    await queue.getDelayed()
-  ])
-
-  return {
-    active,
-    completed,
-    failed,
-    waiting,
-    delayed
-  }
+function slim (data, history) {
+  const keys = ['id', 'progress', 'finishedOn', 'processedOn', 'timestamp', 'data']
+  return data.slice(0, history).map(d => {
+    return keys.reduce((acc, key) => { acc[key] = d[key]; return acc }, {})
+  })
 }

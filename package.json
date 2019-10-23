@@ -7,7 +7,7 @@
   "scripts": {
     "test": "tap",
     "prestart": "cp -r client/web_modules/preact.js client/preact.js",
-    "start": "node server.js"
+    "start": "node  --max-old-space-size=8192 server.js"
   },
   "dependencies": {
     "bull": "^3.10.0",
