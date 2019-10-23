@@ -10,32 +10,6 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 6px;
   margin-bottom: 2em;
 }
-.queue {
-  transition: all .3s ease;
-  animation: updated 1s ease;
-}
-
-.updated {
-  transition: all .3s ease;
-  animation: updated 1s ease;
-}
-@keyframes updated {
-  from {
-    background: yellow;
-  }
-  to {
-    background: transparent;
-  }
-}
-@-webkit-keyframes updated {
-  from {
-    background: yellow;
-  }
-  from {
-    background: transparent;
-  }
-}
-
 .queue-types div {
   display: inline-block;
   padding: 0.75em 0.5em;
@@ -73,13 +47,12 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 50%;
   font-size: 0.75em;
   display: inline-block;
-  /* width: 1.25em; */
   min-width: 1.25em;
   height: 1.25em;
   padding: 0.2em;
   color: white;
   text-align: center;
-  line-height: 1.4em;
+  line-height: 1.3em;
 }
 .queue-active-count {
   background: #155724;

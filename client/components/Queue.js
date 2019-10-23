@@ -22,10 +22,7 @@ export default class Queue extends Component {
       ]),
       preact.h('div', { className: 'queue-details' }, [
         preact.h('div', { className: 'queue-preview' }, queue[`${state.showQueueType}Length`] && queue[`${state.showQueueType}Length`] > 0 ? [
-          preact.h('ul', { className: '' }, queue[state.showQueueType].map(job => preact.h(Job, job))),
-          state.showQueueType === 'completed' ? preact.h('pre', { className: '' }, [
-            JSON.stringify(queue[state.showQueueType], null, 4)
-          ]) : null
+          preact.h('ul', { className: '' }, queue[state.showQueueType].map(job => preact.h(Job, job)))
         ] : [
           preact.h('div', { className: 'empty-queue' }, [
             `Empty "${state.showQueueType}" jobs`

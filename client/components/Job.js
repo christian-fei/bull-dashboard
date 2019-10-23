@@ -5,20 +5,21 @@ export default class Job extends Component {
   render () {
     const job = this.props
     if (!job) return null
-    return preact.h('div', { className: `job ${job.id}` }, [
-      preact.h('span', { className: 'job-id' }, job.id),
-      // preact.h('span', {className: 'job-delay'}, job.delay),
-      preact.h('span', { className: 'job-progress' }, `${job.progress}%`),
-      // preact.h('span', {className: 'job-attempts'}, job.opts.attempts),
-      // preact.h('span', {className: 'job-attempts-made'}, job.attemptsMade),
-      job.finishedOn && preact.h('span', { className: 'small' }, `took ${humanMS(job.finishedOn - job.processedOn)}`),
-      preact.h('small', { className: 'small' }, `\t@ ${new Date(job.timestamp).toISOString()}`),
-      Object.keys(job.data || {}).length > 0 ? preact.h('div', { className: `` }, [
-        preact.h('code', { className: 'small' }, `\t${JSON.stringify(job.data)}`)
+    const { id, progress, finishedOn, processedOn, timestamp, data } = job
+    return preact.h('div', { className: `job ${id}`, key: id }, [
+      preact.h('span', { className: 'job-id' }, id),
+      // preact.h('span', {className: 'job-delay'}, delay),
+      preact.h('span', { className: 'job-progress' }, `${progress}%`),
+      // preact.h('span', {className: 'job-attempts'}, opts.attempts),
+      // preact.h('span', {className: 'job-attempts-made'}, attemptsMade),
+      finishedOn && preact.h('span', { className: 'small' }, `took ${humanMS(finishedOn - processedOn)}`),
+      preact.h('small', { className: 'small' }, `\t@ ${new Date(timestamp).toISOString()}`),
+      Object.keys(data || {}).length > 0 ? preact.h('div', { className: `` }, [
+        preact.h('code', { className: 'small' }, `\t${JSON.stringify(data)}`)
       ]) : null
-      // \tprocessedOn: ${new Date(job.processedOn).toISOString()}
-      // \tfinishedOn: ${new Date(job.finishedOn).toISOString()}
-      // \tduration: ${humanMS(job.finishedOn - job.processedOn)}
+      // \tprocessedOn: ${new Date(processedOn).toISOString()}
+      // \tfinishedOn: ${new Date(finishedOn).toISOString()}
+      // \tduration: ${humanMS(finishedOn - processedOn)}
     ].filter(Boolean))
   }
 }
