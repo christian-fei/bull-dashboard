@@ -22,7 +22,7 @@ async function main ({ namespace = 'bull', history = 100, delay = 100 } = {}) {
   let queues = await queuesFromRedis(client, namespace)
   setInterval(async () => {
     queues = await queuesFromRedis(client, namespace)
-  }, 1000)
+  }, 5000)
 
   while (true) {
     // console.clear()
