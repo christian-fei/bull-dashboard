@@ -7,13 +7,16 @@ export default class Chart extends Component {
     const height = 80
     const width = 1200
     return preact.h('svg', { width, height, className: 'chart' }, data
-      .map((item, i) =>
-        preact.h('rect', {
+      .map((item, i) => {
+        const rectHeight = item * height / 100
+        return preact.h('rect', {
           width: width / data.length,
-          y: height - item,
+          // y: 0,
+          y: height - rectHeight,
           x: i * width / 100,
-          height: item
+          height: rectHeight
         })
+      }
       )
     )
   }
