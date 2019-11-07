@@ -11,7 +11,6 @@ export default class Chart extends Component {
         const rectHeight = item * height / 100
         return preact.h('rect', {
           width: width / data.length,
-          // y: 0,
           y: height - rectHeight,
           x: i * width / 100,
           height: rectHeight
