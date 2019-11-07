@@ -28,35 +28,39 @@ async function main ({ namespace = 'bull', history = 100, delay = 100 } = {}) {
     // console.clear()
     const data = []
     for (const queue of queues) {
-      let active = await queue.getActive()
-      const activeLength = active.length
-      active = slim(active, history)
-      let completed = await queue.getCompleted()
-      const completedLength = completed.length
-      completed = slim(completed, history)
-      let failed = await queue.getFailed()
-      const failedLength = failed.length
-      failed = slim(failed, history)
-      let waiting = await queue.getWaiting()
-      const waitingLength = waiting.length
-      waiting = slim(waiting, history)
-      let delayed = await queue.getDelayed()
-      const delayedLength = delayed.length
-      delayed = slim(delayed, history)
-      process.stdout.write(`-- ${queue.name.padEnd(20)} \tactive: ${activeLength}\tcompleted: ${completedLength}\tfailed: ${failedLength}\twaiting: ${waitingLength}\tdelayed: ${delayedLength}\n`)
-      data.push({
-        name: queue.name,
-        active,
-        activeLength,
-        completed,
-        completedLength,
-        failed,
-        failedLength,
-        waiting,
-        waitingLength,
-        delayed,
-        delayedLength
-      })
+      await Promise.all([
+        queue.getActive(),
+        queue.getCompleted(),
+        queue.getFailed(),
+        queue.getWaiting(),
+        queue.getDelayed()
+      ])
+        .then(([active, completed, failed, waiting, delayed]) => {
+          const activeLength = active.length
+          active = slim(active, history)
+          const completedLength = completed.length
+          completed = slim(completed, history)
+          const failedLength = failed.length
+          failed = slim(failed, history)
+          const waitingLength = waiting.length
+          waiting = slim(waiting, history)
+          const delayedLength = delayed.length
+          delayed = slim(delayed, history)
+          process.stdout.write(`-- ${queue.name.padEnd(20)} \tactive: ${activeLength}\tcompleted: ${completedLength}\tfailed: ${failedLength}\twaiting: ${waitingLength}\tdelayed: ${delayedLength}\n`)
+          data.push({
+            name: queue.name,
+            active,
+            activeLength,
+            completed,
+            completedLength,
+            failed,
+            failedLength,
+            waiting,
+            waitingLength,
+            delayed,
+            delayedLength
+          })
+        })
     }
     sse.send(data)
     data.length = 0
