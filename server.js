@@ -66,8 +66,9 @@ async function main ({ namespace = 'bull', history = 100, delay = 100 } = {}) {
 }
 
 function slim (data, history) {
-  const keys = ['id', 'progress', 'finishedOn', 'processedOn', 'timestamp', 'data']
+  const keys = ['id', '_progress', 'finishedOn', 'processedOn', 'timestamp', 'data']
   return data.slice(0, history).map(d => {
     return keys.reduce((acc, key) => { acc[key] = d[key]; return acc }, {})
   })
+    .map(d => Object.assign(d, { progress: d._progress }))
 }
