@@ -5,18 +5,18 @@
   "bin": "server.js",
   "main": "index.js",
   "scripts": {
-    "test": "tap",
+    "test": "ava",
     "prestart": "cp -r client/web_modules/preact.js client/preact.js",
     "start": "node  --max-old-space-size=8192 server.js"
   },
   "dependencies": {
-    "bull": "^3.10.0",
+    "bull": "^3.12.0",
     "express": "^4.17.1",
     "express-sse": "^0.5.1",
-    "ioredis": "^4.14.0"
+    "ioredis": "^4.14.1"
   },
   "devDependencies": {
-    "tap": "^14.6.1"
+    "ava": "^2.4.0"
   },
   "repository": {
     "type": "git",
@@ -25,7 +25,11 @@
   "bugs": {
     "url": "https://github.com/christian-fei/bull-dashboard/issues"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "bull",
+    "queue",
+    "dashboard"
+  ],
+  "author": "christian-fei",
   "license": "ISC"
 }

@@ -15,6 +15,5 @@ async function queuesFromRedis (client, namespace = 'bull') {
     .filter(x => x.indexOf(':') === -1)
     .filter(x => x !== '[object Object]')
   ))
-
   return queueNames.map(queueName => new Queue(queueName))
 }
