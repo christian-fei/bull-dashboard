@@ -10,7 +10,7 @@ export default class Queue extends Component {
     return preact.h('div', { className: `queue queue-${queue.name}` }, [
       preact.h('div', { className: 'queue-name' }, [
         preact.h('h1', null, queue.name),
-        preact.h(Chart, { data: chartFor(queue[state.showQueueType]) })
+        preact.h(Chart, { data: chartFor(queue.completed) })
       ]),
       preact.h('div', { className: 'queue-types' }, [
         ['active', 'completed', 'failed', 'waiting', 'delayed'].map(type => preact.h('div', {
