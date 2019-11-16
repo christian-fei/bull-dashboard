@@ -73,8 +73,11 @@ h1, h2, h3, h4, h5, h6 {
 .queue-preview {
   padding-left: 1em;
   flex: 1;
-  max-height: 10em;
   overflow: scroll;
+  max-height: 10em;
+}
+.queue-preview.expanded {
+  max-height: initial;
 }
 .job {
   padding: 0.2em;

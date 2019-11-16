@@ -21,14 +21,24 @@ export default class Queue extends Component {
         ]))
       ]),
       preact.h('div', { className: 'queue-details' }, [
-        preact.h('div', { className: 'queue-preview' }, queue[`${state.showQueueType}Length`] && queue[`${state.showQueueType}Length`] > 0 ? [
-          preact.h('ul', { className: '' }, queue[state.showQueueType].map(job => preact.h(Job, job)))
-        ] : [
-          preact.h('div', { className: 'empty-queue' }, [
-            `Empty "${state.showQueueType}" jobs`
+        preact.h('div', { className: `queue-preview ${state.expanded && 'expanded'}` },
+          queue[`${state.showQueueType}Length`] && queue[`${state.showQueueType}Length`] > 0 ? [
+            preact.h('ul', { className: '' },
+              queue[state.showQueueType].map(job => preact.h(Job, job))
+            )
+          ] : [
+            preact.h('div', { className: 'empty-queue' }, [
+              `Empty "${state.showQueueType}" jobs`
+            ])
           ])
+      ].filter(Boolean)),
+      preact.h('div', { className: '' }, [
+        preact.h('div', { className: 'expand-jobs' }, [
+          preact.h('span', {
+            onClick: () => updateState({ expanded: !state.expanded })
+          }, state.expanded ? 'collapse' : 'expand')
         ])
-      ].filter(Boolean))
+      ])
     ])
   }
 }
