@@ -6,6 +6,8 @@ const redis = require('./lib/redis')
 const namespace = process.argv[2]
 const history = process.argv[3]
 const delay = process.argv[4]
+const { join, dirname } = require('path')
+const { realpathSync } = require('fs')
 
 main({ namespace, history, delay })
 
@@ -13,7 +15,9 @@ async function main ({ namespace = 'bull', history = 100, delay = 100 } = {}) {
   const app = express()
   const sse = new SSE()
 
-  app.use('/', express.static('client'))
+  const staticDirPath = join(dirname(realpathSync(process.argv[1])), 'client')
+  console.log(staticDirPath)
+  app.use('/', express.static(staticDirPath))
   app.get('/stream', sse.init)
   app.listen(process.env.HTTP_PORT || process.env.PORT || 4000)
 

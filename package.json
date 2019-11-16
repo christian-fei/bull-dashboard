@@ -6,6 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "ava",
+    "node": "node",
     "prestart": "cp -r client/web_modules/preact.js client/preact.js",
     "start": "node  --max-old-space-size=8192 server.js"
   },
