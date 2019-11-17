@@ -1,44 +1,51 @@
 import * as preact from '/preact.js'
 import Job from '/components/Job.js'
 import Chart from '/components/Chart.js'
-const { Component } = preact
+const { Component, h } = preact
 
 export default class Queue extends Component {
   render () {
     const { queue, state, updateState } = this.props
     if (!queue) return
-    return preact.h('div', { className: `queue queue-${queue.name}` }, [
-      preact.h('div', { className: 'queue-name' }, [
-        preact.h('h1', null, queue.name),
-        preact.h(Chart, { data: chartFor(queue.completed) })
+    return h('div', { className: `queue queue-${queue.name}` }, [
+      h('div', { className: 'queue-name' }, [
+        h('h1', null, queue.name),
+        h(Chart, { data: chartFor(queue.completed) })
       ]),
-      preact.h('div', { className: 'queue-types' }, [
-        ['active', 'completed', 'failed', 'waiting', 'delayed'].map(type => preact.h('div', {
+      h('div', { className: 'queue-types' }, [
+        ['active', 'completed', 'failed', 'waiting', 'delayed'].map(type => h('div', {
           onClick: () => updateState({ showQueue: queue.name, showQueueType: type })
         }, [
-          preact.h('span', { className: 'queue-type-name' }, [type]),
-          preact.h('span', { className: `queue-type-count updated queue-${type}-count` }, [queue[`${type}Length`]])
+          h('span', { className: 'queue-type-name' }, [type]),
+          h('span', { className: `queue-type-count updated queue-${type}-count` }, [queue[`${type}Length`]])
         ]))
       ]),
-      preact.h('div', { className: 'queue-details' }, [
-        preact.h('div', { className: `queue-preview ${state.expanded && 'expanded'}` },
+      (state.showQueueType === 'completed' && state.expanded) ? h('div', { className: '' }, [
+        h('div', { className: 'expand-collapse-jobs' }, [
+          h('span', {
+            onClick: () => updateState({ expanded: false })
+          }, state.expanded ? 'collapse' : null)
+        ])
+      ]) : null,
+      h('div', { className: 'queue-details' }, [
+        h('div', { className: `queue-preview ${state.expanded && 'expanded'}` },
           queue[`${state.showQueueType}Length`] && queue[`${state.showQueueType}Length`] > 0 ? [
-            preact.h('ul', { className: '' },
-              queue[state.showQueueType].map(job => preact.h(Job, job))
+            h('ul', { className: '' },
+              queue[state.showQueueType].map(job => h(Job, job))
             )
           ] : [
-            preact.h('div', { className: 'empty-queue' }, [
+            h('div', { className: 'empty-queue' }, [
               `Empty "${state.showQueueType}" jobs`
             ])
           ])
       ].filter(Boolean)),
-      preact.h('div', { className: '' }, [
-        preact.h('div', { className: 'expand-jobs' }, [
-          preact.h('span', {
+      (state.showQueueType === 'completed') ? h('div', { className: '' }, [
+        h('div', { className: 'expand-collapse-jobs' }, [
+          h('span', {
             onClick: () => updateState({ expanded: !state.expanded })
           }, state.expanded ? 'collapse' : 'expand')
         ])
-      ])
+      ]) : null
     ])
   }
 }

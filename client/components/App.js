@@ -1,6 +1,6 @@
 import * as preact from '/preact.js'
 import Queue from '/components/Queue.js'
-const { Component } = preact
+const { Component, h } = preact
 const { eventSource } = window
 
 export default class App extends Component {
@@ -22,13 +22,13 @@ export default class App extends Component {
   render () {
     const self = this
     const layout = this.state.queues
-      .map((queue) => preact.h(Queue, {
+      .map((queue) => h(Queue, {
         queue,
         state: this.state,
         updateState: (state) => {
           self.setState(state)
         }
       }))
-    return preact.h('div', null, layout)
+    return h('div', null, layout)
   }
 }

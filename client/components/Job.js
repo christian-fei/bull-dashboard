@@ -1,21 +1,21 @@
 import * as preact from '/preact.js'
-const { Component } = preact
+const { Component, h } = preact
 
 export default class Job extends Component {
   render () {
     const job = this.props
     if (!job) return null
     const { id, progress, finishedOn, processedOn, timestamp, data } = job
-    return preact.h('div', { className: `job ${id}`, key: id }, [
-      preact.h('span', { className: 'job-id' }, id),
-      // preact.h('span', {className: 'job-delay'}, delay),
-      preact.h('span', { className: 'job-progress' }, `${progress}%`),
-      // preact.h('span', {className: 'job-attempts'}, opts.attempts),
-      // preact.h('span', {className: 'job-attempts-made'}, attemptsMade),
-      finishedOn && preact.h('span', { className: 'small' }, `took ${humanMS(finishedOn - processedOn)}`),
-      preact.h('small', { className: 'small' }, `\t@ ${new Date(timestamp).toISOString()}`),
-      Object.keys(data || {}).length > 0 ? preact.h('div', { className: `` }, [
-        preact.h('code', { className: 'small' }, `\t${JSON.stringify(data)}`)
+    return h('div', { className: `job ${id}`, key: id }, [
+      h('span', { className: 'job-id' }, id),
+      // h('span', {className: 'job-delay'}, delay),
+      h('span', { className: 'job-progress' }, `${progress}%`),
+      // h('span', {className: 'job-attempts'}, opts.attempts),
+      // h('span', {className: 'job-attempts-made'}, attemptsMade),
+      finishedOn && h('span', { className: 'small' }, `took ${humanMS(finishedOn - processedOn)}`),
+      h('small', { className: 'small' }, `\t@ ${new Date(timestamp).toISOString()}`),
+      Object.keys(data || {}).length > 0 ? h('div', { className: `` }, [
+        h('code', { className: 'small' }, `\t${JSON.stringify(data)}`)
       ]) : null
       // \tprocessedOn: ${new Date(processedOn).toISOString()}
       // \tfinishedOn: ${new Date(finishedOn).toISOString()}
