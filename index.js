@@ -1,7 +1,9 @@
 const Queue = require('bull')
+const server = require('./server')
 
 module.exports = {
-  queuesFromRedis
+  queuesFromRedis,
+  server
 }
 
 async function queuesFromRedis (client, namespace = 'bull') {

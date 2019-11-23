@@ -9,9 +9,13 @@ const delay = process.argv[4]
 const { join, dirname } = require('path')
 const { realpathSync } = require('fs')
 
-main({ namespace, history, delay })
+if (require.main === module) {
+  main({ namespace, history, delay })
+} else {
+  module.exports = main
+}
 
-async function main ({ namespace = 'bull', history = 100, delay = 100 } = {}) {
+async function main ({ namespace = 'bull', history = 100, delay = 100, port } = {}) {
   const app = express()
   const sse = new SSE()
 
@@ -19,7 +23,7 @@ async function main ({ namespace = 'bull', history = 100, delay = 100 } = {}) {
   console.log(staticDirPath)
   app.use('/', express.static(staticDirPath))
   app.get('/stream', sse.init)
-  app.listen(process.env.HTTP_PORT || process.env.PORT || 4000)
+  app.listen(port, process.env.HTTP_PORT || process.env.PORT || 4000)
 
   const redisOptions = { host: '127.0.0.1', port: 6379, db: '0' }
   const client = redis.getClient(redisOptions)
