@@ -23,7 +23,7 @@ async function main ({ namespace = 'bull', history = 100, delay = 100, port } = 
   console.log(staticDirPath)
   app.use('/', express.static(staticDirPath))
   app.get('/stream', sse.init)
-  app.listen(port, process.env.HTTP_PORT || process.env.PORT || 4000)
+  app.listen(port || process.env.HTTP_PORT || process.env.PORT || 4000)
 
   const redisOptions = { host: '127.0.0.1', port: 6379, db: '0' }
   const client = redis.getClient(redisOptions)
