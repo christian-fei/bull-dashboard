@@ -10,7 +10,6 @@ export default class Chart extends Component {
     return h('svg', { width, height, className: 'chart' }, data
       .map((durationInMs, i) => {
         const rectHeight = durationInMs * 100 / max
-        console.log('durationInMs, i', durationInMs, i, data)
         return h('rect', {
           width: width / data.length,
           y: height - rectHeight,
