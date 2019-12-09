@@ -4,11 +4,13 @@ const { Component, h } = preact
 export default class Chart extends Component {
   render ({ data }) {
     if (!Array.isArray(data) || data.length < 10) return h('div', { className: 'chart' }, null)
-    const height = 80
+    const height = 100
     const width = 1200
+    const max = Math.max(...data)
     return h('svg', { width, height, className: 'chart' }, data
-      .map((item, i) => {
-        const rectHeight = item * height / 100
+      .map((durationInMs, i) => {
+        const rectHeight = durationInMs * 100 / max
+        console.log('durationInMs, i', durationInMs, i, data)
         return h('rect', {
           width: width / data.length,
           y: height - rectHeight,
