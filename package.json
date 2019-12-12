@@ -1,6 +1,6 @@
 {
   "name": "bull-dashboard",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "description": "Dashboard for Bull queue [Bull](https://github.com/OptimalBits/bull)",
   "bin": "server.js",
   "main": "index.js",
