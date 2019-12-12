@@ -20,12 +20,13 @@ async function main ({ namespace = 'bull', history = 100, delay = 100, port } = 
   const sse = new SSE()
 
   const staticDirPath = join(dirname(realpathSync(process.argv[1])), 'client')
-  console.log(staticDirPath)
+  console.log({ staticDirPath })
   app.use('/', express.static(staticDirPath))
   app.get('/stream', sse.init)
   app.listen(port || process.env.HTTP_PORT || process.env.PORT || 4000)
 
-  const redisOptions = { host: '127.0.0.1', port: 6379, db: '0' }
+  const redisOptions = { host: process.env.REDIS_HOST || '0.0.0.0', port: process.env.REDIS_PORT ? +process.env.REDIS_PORT : 6379, db: process.env.REDIS_DB || '0' }
+  console.log({ redisOptions, namespace })
   const client = redis.getClient(redisOptions)
   let queues = await queuesFromRedis(client, namespace)
   setInterval(async () => {
