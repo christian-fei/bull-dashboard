@@ -38,23 +38,18 @@ async function main ({ namespace = 'bull', history = 100, delay = 100, port } = 
     const data = []
     for (const queue of queues) {
       await Promise.all([
-        queue.getActive(),
-        queue.getCompleted(),
-        queue.getFailed(),
-        queue.getWaiting(),
-        queue.getDelayed()
+        queue.getActive(0, history),
+        queue.getActiveCount(),
+        queue.getCompleted(0, history),
+        queue.getCompletedCount(),
+        queue.getFailed(0, history),
+        queue.getFailedCount(),
+        queue.getWaiting(0, history),
+        queue.getWaitingCount(),
+        queue.getDelayed(0, history),
+        queue.getDelayedCount()
       ])
-        .then(([active, completed, failed, waiting, delayed]) => {
-          const activeLength = active.length
-          active = slim(active, history)
-          const completedLength = completed.length
-          completed = slim(completed, history)
-          const failedLength = failed.length
-          failed = slim(failed, history)
-          const waitingLength = waiting.length
-          waiting = slim(waiting, history)
-          const delayedLength = delayed.length
-          delayed = slim(delayed, history)
+        .then(([active, activeLength, completed, completedLength, failed, failedLength, waiting, waitingLength, delayed, delayedLength]) => {
           process.stdout.write(`-- ${queue.name.padEnd(20)} \tactive: ${activeLength}\tcompleted: ${completedLength}\tfailed: ${failedLength}\twaiting: ${waitingLength}\tdelayed: ${delayedLength}\n`)
           data.push({
             name: queue.name,
