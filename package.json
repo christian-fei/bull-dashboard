@@ -8,8 +8,9 @@
     "test": "ava",
     "node": "node",
     "bin": "bin/run",
+    "simulate": "bin/simulate",
     "prestart": "cp -r client/web_modules/preact.js client/preact.js",
-    "start": "node  --max-old-space-size=8192 server.js"
+    "start": "node bin/run"
   },
   "dependencies": {
     "bull": "^3.12.1",
