@@ -3,17 +3,10 @@ const express = require('express')
 const SSE = require('express-sse')
 const { queuesFromRedis } = require('.')
 const redis = require('./lib/redis')
-const namespace = process.argv[2]
-const history = process.argv[3]
-const delay = process.argv[4]
 const { join, dirname } = require('path')
 const { realpathSync } = require('fs')
 
-if (require.main === module) {
-  main({ namespace, history, delay })
-} else {
-  module.exports = main
-}
+module.exports = main
 
 async function main ({ namespace = 'bull', history = 100, delay = 100, port } = {}) {
   const app = express()
@@ -71,16 +64,4 @@ async function main ({ namespace = 'bull', history = 100, delay = 100, port } = 
 
     await new Promise((resolve) => setTimeout(resolve, delay))
   }
-}
-
-function slim (data, history) {
-  const keys = ['id', '_progress', 'finishedOn', 'processedOn', 'timestamp', 'data']
-  return data.slice(0, history).map(d => {
-    return keys.reduce((acc, key) => {
-      if (!d) return acc
-      acc[key] = d[key]
-      return acc
-    }, {})
-  })
-    .map(d => Object.assign(d, { progress: d._progress }))
 }

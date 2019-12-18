@@ -2,11 +2,12 @@
   "name": "bull-dashboard",
   "version": "4.0.0",
   "description": "Dashboard for Bull queue [Bull](https://github.com/OptimalBits/bull)",
-  "bin": "server.js",
+  "bin": "bin/run",
   "main": "index.js",
   "scripts": {
     "test": "ava",
     "node": "node",
+    "bin": "bin/run",
     "prestart": "cp -r client/web_modules/preact.js client/preact.js",
     "start": "node  --max-old-space-size=8192 server.js"
   },
@@ -14,7 +15,8 @@
     "bull": "^3.12.1",
     "express": "^4.17.1",
     "express-sse": "^0.5.1",
-    "ioredis": "^4.14.1"
+    "ioredis": "^4.14.1",
+    "yargs": "^15.0.2"
   },
   "devDependencies": {
     "ava": "^2.4.0"
