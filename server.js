@@ -12,7 +12,7 @@ async function main ({ namespace = 'bull', history = 100, delay = 100, port } = 
   const app = express()
   const sse = new SSE()
 
-  const staticDirPath = join(dirname(realpathSync(process.argv[1])), 'client')
+  const staticDirPath = join(dirname(realpathSync(process.argv[1])), '..', 'client')
   console.log({ staticDirPath })
   app.use('/', express.static(staticDirPath))
   app.get('/stream', sse.init)
