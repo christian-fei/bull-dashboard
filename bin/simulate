@@ -1,27 +1,25 @@
 #!/usr/bin/env node
 
 const Queue = require('bull')
-const redis = require('../lib/redis')
+const { getClient } = require('../lib/redis')
 
 main()
 
 async function main () {
   const redisOptions = { host: process.env.REDIS_HOST || '0.0.0.0', port: process.env.REDIS_PORT ? +process.env.REDIS_PORT : 6379, db: process.env.REDIS_DB || '0' }
   console.log({ redisOptions })
-  const client = redis.getClient(redisOptions)
-  const queue1 = new Queue('queue1', { redis: client })
-  const queue2 = new Queue('queue2', { redis: client })
-  const queue3 = new Queue('queue3', { redis: client })
+  const redis = getClient(redisOptions)
+  const [queue1, queue2, queue3] = [new Queue('queue1', { redis }), new Queue('queue2', { redis }), new Queue('queue3', { redis })]
 
   const fakeWork = async () => new Promise((resolve) => setTimeout(resolve, +(Math.random() * 1000)))
 
-  queue1.process(fakeWork)
-  queue2.process(fakeWork)
-  queue3.process(fakeWork)
+  queue1.process(2, fakeWork)
+  queue2.process(2, fakeWork)
+  queue3.process(2, fakeWork)
 
   setInterval(async () => {
-    queue1.add({ foo: 'bar' })
-    queue2.add({ foo: 'bar' })
-    queue3.add({ foo: 'bar' })
-  }, 500)
+    queue1.add({ foo: 'bar' }, { attempts: 2 })
+    queue2.add({ foo: 'bar' }, { attempts: 2 })
+    queue3.add({ foo: 'bar' }, { attempts: 2 })
+  }, 250)
 }
