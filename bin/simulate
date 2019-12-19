@@ -9,7 +9,7 @@ async function main () {
   const redisOptions = { host: process.env.REDIS_HOST || '0.0.0.0', port: process.env.REDIS_PORT ? +process.env.REDIS_PORT : 6379, db: process.env.REDIS_DB || '0' }
   console.log({ redisOptions })
   const redis = getClient(redisOptions)
-  const [queue1, queue2, queue3] = [new Queue('queue1', { redis }), new Queue('queue2', { redis }), new Queue('queue3', { redis })]
+  const [queue1, queue2, queue3] = ['queue1', 'queue2', 'queue3'].map(name => new Queue(name, { redis }))
 
   const fakeWork = async () => new Promise((resolve) => setTimeout(resolve, +(Math.random() * 1000)))
 
