@@ -18,7 +18,12 @@ async function main ({ namespace = 'bull', history = 100, delay = 100, port } = 
   app.get('/stream', sse.init)
   app.listen(port || process.env.HTTP_PORT || process.env.PORT || 4000)
 
-  const redisOptions = { host: process.env.REDIS_HOST || '0.0.0.0', port: process.env.REDIS_PORT ? +process.env.REDIS_PORT : 6379, db: process.env.REDIS_DB || '0' }
+  const redisOptions = {
+    host: process.env.REDIS_HOST || '0.0.0.0',
+    password: process.env.REDIS_PASSWORD,
+    port: process.env.REDIS_PORT ? +process.env.REDIS_PORT : 6379,
+    db: process.env.REDIS_DB || '0'
+  }
   console.log({ redisOptions, namespace })
   const client = redis.getClient(redisOptions)
   let queues = await queuesFromRedis(client, namespace)
