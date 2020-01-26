@@ -8,7 +8,7 @@ const { realpathSync } = require('fs')
 
 module.exports = main
 
-async function main ({ namespace = 'bull', history = 100, delay = 100, port } = {}) {
+async function main ({ namespace = 'bull', history = 100, delay = 100, port = process.env.HTTP_PORT || process.env.PORT || 4000 } = {}) {
   const app = express()
   const sse = new SSE()
 
@@ -16,7 +16,8 @@ async function main ({ namespace = 'bull', history = 100, delay = 100, port } = 
   console.log({ staticDirPath })
   app.use('/', express.static(staticDirPath))
   app.get('/stream', sse.init)
-  app.listen(port || process.env.HTTP_PORT || process.env.PORT || 4000)
+  app.listen(port)
+  console.log(`visit http://localhost:${port}`)
 
   const redisOptions = {
     host: process.env.REDIS_HOST || '0.0.0.0',
