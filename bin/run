@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const main = require('../server')
+const main = require('..')
 const namespace = process.argv[2]
 const history = process.argv[3]
 const delay = process.argv[4]
