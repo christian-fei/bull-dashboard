@@ -15,7 +15,7 @@ export default class Job extends Component {
       finishedOn && h('span', { className: 'small' }, `took ${humanMS(finishedOn - processedOn)}`),
       h('small', { className: 'small' }, `\t@ ${new Date(timestamp).toISOString()}`),
       Object.keys(data || {}).length > 0 ? h('div', { className: `` }, [
-        h('code', { className: 'small' }, `\t${JSON.stringify(data)}`)
+        h('pre', { className: 'small job-data' }, `${JSON.stringify(data, null, 2)}`)
       ]) : null
       // \tprocessedOn: ${new Date(processedOn).toISOString()}
       // \tfinishedOn: ${new Date(finishedOn).toISOString()}

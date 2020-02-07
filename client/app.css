@@ -114,3 +114,15 @@ svg {
   right: 0;
   opacity: 0.3;
 }
+
+.small {
+  font-size: 0.8em;
+}
+
+.job-data {
+  background: #eee;
+  margin-top: 0.3em;
+  margin-bottom: 0.3em;
+  max-height: 3em;
+  overflow: scroll;
+}
