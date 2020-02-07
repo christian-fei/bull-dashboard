@@ -13,7 +13,6 @@ async function main ({ clear = true, namespace = 'bull', history = 100, delay = 
   const sse = new SSE()
 
   const staticDirPath = join(dirname(realpathSync(process.argv[1])), '..', 'client')
-  console.log({ staticDirPath })
   let lastRequestAt
   app.use((req, res, next) => {
     lastRequestAt = Date.now()
@@ -30,13 +29,15 @@ async function main ({ clear = true, namespace = 'bull', history = 100, delay = 
     port: process.env.REDIS_PORT ? +process.env.REDIS_PORT : 6379,
     db: process.env.REDIS_DB || '0'
   }
-  console.log({ redisOptions, namespace })
+  console.log(JSON.stringify({ redisOptions, namespace }))
+
   const client = redis.getClient(redisOptions)
   let queues = await queuesFromRedis(client, namespace)
 
-  setInterval(run, delay)
-
   let lastRunAt
+
+  run()
+  setInterval(run, delay)
 
   async function run () {
     if (lastRequestAt < Date.now() - 1000 * 60 * 10) {
@@ -53,6 +54,7 @@ async function main ({ clear = true, namespace = 'bull', history = 100, delay = 
 
     queues = await queuesFromRedis(client, namespace)
     clear && console.clear()
+    clear && console.log(`visit http://localhost:${port}`)
 
     const data = []
     for (const queue of queues) {
