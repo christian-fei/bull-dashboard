@@ -17,6 +17,10 @@ export default class App extends Component {
       queues.sort((q1, q2) => q1.name.localeCompare(q2.name))
       this.setState({ queues })
     }
+
+    setInterval(async () => {
+      await window.fetch('/favicon.ico')
+    }, 1000 * 60)
   }
 
   render () {

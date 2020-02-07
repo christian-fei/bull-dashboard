@@ -8,12 +8,17 @@ const { realpathSync } = require('fs')
 
 module.exports = main
 
-async function main ({ namespace = 'bull', history = 100, delay = 100, port = process.env.HTTP_PORT || process.env.PORT || 4000 } = {}) {
+async function main ({ clear = true, namespace = 'bull', history = 100, delay = 500, port = process.env.HTTP_PORT || process.env.PORT || 4000 } = {}) {
   const app = express()
   const sse = new SSE()
 
   const staticDirPath = join(dirname(realpathSync(process.argv[1])), '..', 'client')
   console.log({ staticDirPath })
+  let lastRequestAt
+  app.use((req, res, next) => {
+    lastRequestAt = Date.now()
+    next()
+  })
   app.use('/', express.static(staticDirPath))
   app.get('/stream', sse.init)
   app.listen(port)
@@ -28,12 +33,28 @@ async function main ({ namespace = 'bull', history = 100, delay = 100, port = pr
   console.log({ redisOptions, namespace })
   const client = redis.getClient(redisOptions)
   let queues = await queuesFromRedis(client, namespace)
-  setInterval(async () => {
-    queues = await queuesFromRedis(client, namespace)
-  }, 5000)
 
-  while (true) {
-    // console.clear()
+  setInterval(run, delay)
+
+  let lastRunAt
+
+  async function run () {
+    if (lastRequestAt < Date.now() - 1000 * 60 * 10) {
+      console.log('pass')
+      await new Promise((resolve) => setTimeout(resolve, 10000))
+      return
+    }
+
+    if (lastRunAt && lastRunAt > Date.now() - delay) {
+      console.log('already ran')
+      return
+    }
+
+    lastRunAt = Date.now()
+
+    queues = await queuesFromRedis(client, namespace)
+    clear && console.clear()
+
     const data = []
     for (const queue of queues) {
       await Promise.all([
@@ -67,7 +88,5 @@ async function main ({ namespace = 'bull', history = 100, delay = 100, port = pr
     }
     sse.send(data)
     data.length = 0
-
-    await new Promise((resolve) => setTimeout(resolve, delay))
   }
 }
