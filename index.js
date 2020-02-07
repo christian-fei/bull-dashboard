@@ -40,13 +40,12 @@ async function main ({ clear = true, namespace = 'bull', history = 100, delay = 
 
   async function run () {
     if (lastRequestAt < Date.now() - 1000 * 60 * 10) {
-      console.log('pass')
-      await new Promise((resolve) => setTimeout(resolve, 10000))
+      console.log('it seems there are non active clients, skipping updates')
       return
     }
 
     if (lastRunAt && lastRunAt > Date.now() - delay) {
-      console.log('already ran')
+      console.log(`already ran during last interval of ${delay}`)
       return
     }
 
