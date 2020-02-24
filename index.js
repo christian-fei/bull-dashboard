@@ -8,7 +8,7 @@ const { realpathSync } = require('fs')
 
 module.exports = main
 
-async function main ({ clear = true, namespace = 'bull', history = 100, delay = 500, port = process.env.HTTP_PORT || process.env.PORT || 4000 } = {}) {
+async function main ({ clear = true, namespace = 'bull', history = 100, delay = 1000, port = process.env.HTTP_PORT || process.env.PORT || 4000 } = {}) {
   const app = express()
   const sse = new SSE()
 
@@ -32,7 +32,7 @@ async function main ({ clear = true, namespace = 'bull', history = 100, delay = 
   console.log(JSON.stringify({ redisOptions, namespace }))
 
   const client = redis.getClient(redisOptions)
-  let queues = await queuesFromRedis(client, namespace)
+  const queues = await queuesFromRedis(client, namespace)
 
   let lastRunAt
 
@@ -52,7 +52,7 @@ async function main ({ clear = true, namespace = 'bull', history = 100, delay = 
 
     lastRunAt = Date.now()
 
-    queues = await queuesFromRedis(client, namespace)
+    // queues = await queuesFromRedis(client, namespace)
     clear && console.clear()
     clear && console.log(`visit http://localhost:${port}`)
 

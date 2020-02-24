@@ -26,6 +26,7 @@ h1, h2, h3, h4, h5, h6 {
   position: relative;
   height: 140px;
   text-align: center;
+  overflow: scroll;
 }
 .queue-name h1 {
   margin-bottom: 0;
@@ -74,7 +75,7 @@ h1, h2, h3, h4, h5, h6 {
   padding-left: 1em;
   flex: 1;
   overflow: scroll;
-  max-height: 10em;
+  max-height: 20em;
 }
 .queue-preview.expanded {
   max-height: initial;
@@ -121,8 +122,9 @@ svg {
 
 .job-data {
   background: #eee;
-  margin-top: 0.3em;
-  margin-bottom: 0.3em;
-  max-height: 3em;
+  /* margin-top: 0.3em;
+  margin-bottom: 0.3em; */
+  padding: 0.1em;
+  max-height: 10em;
   overflow: scroll;
 }
