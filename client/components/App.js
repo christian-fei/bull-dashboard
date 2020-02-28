@@ -14,7 +14,8 @@ export default class App extends Component {
     eventSource.onmessage = (message) => {
       if (!message || !message.data) return console.error('skipping empty message')
       const queues = JSON.parse(message.data)
-      queues.sort((q1, q2) => q1.name.localeCompare(q2.name))
+      // queues.sort((q1, q2) => q1.name.localeCompare(q2.name))
+      queues.sort((q1, q2) => q2.activeLength - q1.activeLength)
       this.setState({ queues })
     }
 
