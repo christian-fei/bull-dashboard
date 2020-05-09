@@ -13,14 +13,14 @@
     "start": "node bin/run"
   },
   "dependencies": {
-    "bull": "^3.12.1",
+    "bull": "^3.14.0",
     "express": "^4.17.1",
-    "express-sse": "^0.5.1",
-    "ioredis": "^4.14.1",
-    "yargs": "^15.0.2"
+    "express-sse": "^0.5.3",
+    "ioredis": "^4.16.3",
+    "yargs": "^15.3.1"
   },
   "devDependencies": {
-    "ava": "^2.4.0"
+    "ava": "^3.8.2"
   },
   "repository": {
     "type": "git",
