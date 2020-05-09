@@ -11,7 +11,7 @@ async function main () {
   const redis = getClient(redisOptions)
   const [queue1, queue2, queue3] = ['queue1', 'queue2', 'queue3'].map(name => new Queue(name, { redis }))
 
-  const fakeWork = async () => new Promise((resolve) => setTimeout(resolve, +(Math.random() * 1000)))
+  const fakeWork = async () => new Promise((resolve) => setTimeout(resolve, +(Math.random() * 100)))
 
   queue1.process(2, fakeWork)
   queue2.process(2, fakeWork)
@@ -21,5 +21,5 @@ async function main () {
     queue1.add({ foo: 'bar' }, { attempts: 2 })
     queue2.add({ foo: 'bar' }, { attempts: 2 })
     queue3.add({ foo: 'bar' }, { attempts: 2 })
-  }, 1000)
+  }, 100)
 }

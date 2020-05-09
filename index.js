@@ -8,7 +8,7 @@ const { realpathSync } = require('fs')
 
 module.exports = main
 
-async function main ({ clear = true, namespace = 'bull', history = 100, delay = 3000, port = process.env.HTTP_PORT || process.env.PORT || 4000 } = {}) {
+async function main ({ clear = true, namespace = 'bull', history = 100, delay = 1000, port = process.env.HTTP_PORT || process.env.PORT || 4000 } = {}) {
   const app = express()
   const sse = new SSE()
 
